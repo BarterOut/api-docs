@@ -17,7 +17,7 @@ This data will likely be a [token](https://jwt.io/) authorizing the request.
 - For all `POST` requests, data should generally be passed through the body, in a subobject called `data`.
 In Javascript this would look like:
 
-```
+```javascript
 const data = {
     token,
     foo: bar
@@ -35,7 +35,7 @@ fetch(url, {
 });
 ```
 Our standard API response looks like this:
-```
+```javascript
 {
   data: Object,
   time: new Date(),
@@ -58,7 +58,7 @@ To Sign Up a user with an existing account using our API, you must provide a val
 
 ##### Sample code in Javascript
 
-```
+```javascript
 const data = {
     firstName,
     lastName,
@@ -87,7 +87,7 @@ To log in a user with an existing account using our API, you must provide an ema
 
 ##### Sample code in Javascript
 
-```
+```javascript
 const data = { emailAddress, password };
 
 fetch('/api/auth/login', {
@@ -118,7 +118,7 @@ To get all of the available books (books being sold that are not yet sold yet) y
 *See our _[schema documentation](https://github.com/BarterOut/schema-docs)_ for more info.
 ##### Sample code in Javascript
 
-```
+```javascript
 fetch('/api/books/getAllBooks', {
     headers: {
         Accept: 'application/json',
@@ -140,7 +140,7 @@ Like any typical `GET` request to the API, you also need to provide a valid user
 is also done through the URL.
 
 ##### Sample code in Javascript
-```
+```javascript
 fetch('/api/books/search/:query/:token', {
     headers: {
         Accept: 'application/json',
