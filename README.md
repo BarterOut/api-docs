@@ -11,29 +11,12 @@ Our API is built around half of the [MERN](http://mern.io) stack. We use a combi
 All of our code is compliant with [ESLint](https://eslint.org), modern Javascript and [Web Standards](https://www.w3.org/standards), and all functions are documented internally with [JS Doc](http://usejsdoc.org/about-getting-started.html).
 
 ### Important Info
-- For all `GET` requests, data should generally be passed through the URL unless otherwise specified.
-This data will likely be a [token](https://jwt.io/) authorizing the request.
+- For endpoints that require authorization, a valid token must be passed through the `Authorization` header in the form:
+`Authorization: Token your_token`
 
-- For all `POST` requests, data should generally be passed through the body, in a subobject called `data`.
-In Javascript this would look like:
+If a valid token is not passed in this way, the server will reject the request automatically, throwing an error.
 
-```javascript
-const data = {
-    token,
-    foo: bar
-};
 
-fetch(url, {
-    headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(data),
-}).then((response) => {
-  // Do something with the response...
-});
-```
 Our standard API response looks like this:
 ```javascript
 {
@@ -51,7 +34,7 @@ as well as a time stamp of when you called it.
 ## Documentation
 
 ### Authenticating Users
-Our API uses a node package called JWT (Javascript Web Tokens) along with passport.js to handle authentication. When a user is signed up, we verify all their information and then send them an email to the provided email address. Once they click the link we sent them, we store them in our database, hashing and salting the password and generating a token. We take security very seriously at BarterOut, because of this almost every request made by a client to the API requires a valid token. That token is verified serverside everytime a user makes a request, thus keeping our API and database safe from malicious attackers.
+Our API uses a node package called JWT (Javascript Web Tokens) to handle authentication. When a user is signed up, we verify all their information and then send them an email to the provided email address. Once they click the link we sent them, we store them in our database, hashing and salting the password and generating a token. We take security very seriously at BarterOut, because of this almost every request made by a client to the API requires a valid token. That token is verified serverside everytime a user makes a request, thus keeping our API and database safe from malicious attackers.
 
 #### Sign Up
 To Sign Up a user with an existing account using our API, you must provide a valid `.edu` email address, first and last name, university, CMCBox, Venmo username, and password. Our API then takes that information sends a confirmation email to the specified email address. Once the user clicks the link in the email, their account is verified and they can start using the platform.
@@ -71,8 +54,8 @@ const data = {
 
 fetch('/api/auth/signup', {
     headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     },
     method: 'POST',
     body: data,
@@ -92,8 +75,8 @@ const data = { emailAddress, password };
 
 fetch('/api/auth/login', {
     headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     },
     method: 'POST',
     body: data,
@@ -113,7 +96,7 @@ someone clicks 'checkout' in their cart. This is also the case with matched book
 strategy and it allows us to simply our managment systems.
 
 #### Getting all available books in the database
-To get all of the available books (books being sold that are not yet sold yet) you only have to provide a valid JWT to the server, and our API will return a JSON array of book objects*.
+To get all of the available books (books being sold that are not yet sold yet) you can optionally provide a JWT, and our API will return a JSON array of book objects*. Note that if you don't provide a token, users will see books that they themselves posted, limiting the user experience.
 
 *See our _[schema documentation](https://github.com/BarterOut/schema-docs)_ for more info.
 ##### Sample code in Javascript
@@ -121,8 +104,9 @@ To get all of the available books (books being sold that are not yet sold yet) y
 ```javascript
 fetch('/api/books/getAllBooks', {
     headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Token ${Token}` // optional
     },
     method: 'GET',
 }).then((response) => {
@@ -136,15 +120,15 @@ To search for specic groups of books, we ask for a single search query, which wo
 provided by the user. This is passed to the URL under the query parameter. We then search through
 our database, matching books on Title, Course Code, and ISBN.
 
-Like any typical `GET` request to the API, you also need to provide a valid user token, which
-is also done through the URL.
+Like any typical `GET` request to the API, you also need to provide a valid user token.
 
 ##### Sample code in Javascript
 ```javascript
-fetch('/api/books/search/:query/:token', {
+fetch('/api/books/search/:query/', {
     headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Token ${Token}`
     },
     method: 'GET',
 }).then((response) => {
