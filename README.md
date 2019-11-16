@@ -30,6 +30,11 @@ Our standard API response looks like this:
 All data will be passed back under `data` and we also provide the API method you called
 as well as a time stamp of when you called it.
 
+### Errors
+If the API runs into a problem when attempting to complete your request, we will send back a response with a `status` >= `400`. If this is the case, there will be an `error` property under the `data` object in our standard response, providing an explanation as to what the error was.
+
+### User Permissions
+All users in the database have a `permissionType` property that is, by default, `0`. This allows them to acces the main part of the website, post books, buy books, etc. Any user with permission type `1` is considered an admin, and can login and view the admin dashboard, comfirming transaction details, viewing statistics, and finding users. Any user with permission type `2` is considered an owner, and as of now, this is the highest level of permission. Owners have the additional privilage of making other users admins, as well as running admin tools on the dashboard, such as the `Unlist Old Books` feature.
 
 ## Documentation
 
