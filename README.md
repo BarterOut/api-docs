@@ -34,7 +34,7 @@ as well as a time stamp of when you called it.
 If the API runs into a problem when attempting to complete your request, we will send back a response with a `status` >= `400`. If this is the case, there will be an `error` property under the `data` object in our standard response, providing an explanation as to what the error was.
 
 ### User Permissions
-All users in the database have a `permissionType` property that is, by default, `0`. This allows them to acces the main part of the website, post books, buy books, etc. Any user with permission type `1` is considered an admin, and can login and view the admin dashboard, comfirming transaction details, viewing statistics, and finding users. Any user with permission type `2` is considered an owner, and as of now, this is the highest level of permission. Owners have the additional privilage of making other users admins, as well as running admin tools on the dashboard, such as the `Unlist Old Books` feature.
+All users in the database have a `permissionType` property that is, by default, `0`. This allows them to acces the main part of the website, post books, buy books, etc. Any user with permission type `1` is considered an admin, and can login and view the admin dashboard, confirming transaction details, viewing statistics, and finding users. Any user with permission type `2` is considered an owner, and as of now, this is the highest level of permission. Owners have the additional privilage of making other users admins, as well as running admin tools on the dashboard, such as the `Unlist Old Books` feature.
 
 ## Documentation
 
@@ -42,7 +42,7 @@ All users in the database have a `permissionType` property that is, by default, 
 Our API uses a node package called JWT (Javascript Web Tokens) to handle authentication. When a user is signed up, we verify all their information and then send them an email to the provided email address. Once they click the link we sent them, we store them in our database, hashing and salting the password and generating a token. We take security very seriously at BarterOut, because of this almost every request made by a client to the API requires a valid token. That token is verified serverside everytime a user makes a request, thus keeping our API and database safe from malicious attackers.
 
 #### Sign Up
-To Sign Up a user with an existing account using our API, you must provide a valid `.edu` email address, first and last name, university, CMCBox, Venmo username, and password. Our API then takes that information sends a confirmation email to the specified email address. Once the user clicks the link in the email, their account is verified and they can start using the platform.
+To Sign Up a user using our API, you must provide a valid `.edu` email address, first and last name, university, CMCBox, Venmo username, and password. Our API then takes that information sends a confirmation email to the specified email address. Once the user clicks the link in the email, their account is verified and they can start using the platform.
 
 ##### Sample code in Javascript
 
@@ -93,7 +93,14 @@ fetch('/api/auth/login', {
 
 ### Managing Books 
 
-We manage books in our database by storing them in two separate groups. One group are books that were posted to be sold, and one is books that were requested by a user. Using this model, you never have to manually check for matches for your user, we do that **automatically**. We use a **status** system in our database to manage the state of a given book. A status of **_0 means the book is available to purchase_**, **_1 means the book is currently in a transaction (someone bought the book on the website but we have yet to confirm the condition and book_**), **_2 means the book has been purchased and is in the delivery process_**. Understanding these statuses is key to using our API.
+We manage books in our database by storing them in two separate groups. One group are books that were posted to be sold, and one is books that were requested by a user. Using this model, you never have to manually check for matches for your user, we do that **automatically**. We use a **status** system in our database to manage the state of a given book.
+ * __Status 0__: a book that is posted and ready to sell
+ * __Status 1__: someone clicked buy on the website
+ * __Status 2__: We have verified the condition of the book and charged the buyer
+ * __Status 3__: the book has been delivered and we paid the seller
+ * __Status 4__: Not in use
+ * __Status 5__: The book has been unlisted and set as inactive
+Understanding these statuses is key to using our API.
 
 _***Note:**_ Users are able to add books to a cart before 'checking out'. However, when books are in a user's cart, their
 status has not been changed. This means that those books are still avaliable to all other users on the site until
