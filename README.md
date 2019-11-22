@@ -39,7 +39,7 @@ All users in the database have a `permissionType` property that is, by default, 
 ## Documentation
 
 ### Authenticating Users
-Our API uses a node package called JWT (Javascript Web Tokens) to handle authentication. When a user is signed up, we verify all their information and then send them an email to the provided email address. Once they click the link we sent them, we store them in our database, hashing and salting the password and generating a token. We take security very seriously at BarterOut, because of this almost every request made by a client to the API requires a valid token. That token is verified serverside everytime a user makes a request, thus keeping our API and database safe from malicious attackers.
+Our API uses a node package called JWT (JSON Web Tokens) to handle authentication. When a user is signed up, we verify all their information and then send them an email to the provided email address. Once they click the link we sent them, we store them in our database, hashing and salting the password and generating a token. We take security very seriously at BarterOut, because of this almost every request made by a client to the API requires a valid token. That token is verified serverside everytime a user makes a request, thus keeping our API and database safe from malicious attackers.
 
 #### Sign Up
 To Sign Up a user using our API, you must provide a valid `.edu` email address, first and last name, university, CMCBox, Venmo username, and password. Our API then takes that information sends a confirmation email to the specified email address. Once the user clicks the link in the email, their account is verified and they can start using the platform.
@@ -71,7 +71,7 @@ fetch('/api/auth/signup', {
 ```
 
 #### Login
-To log in a user with an existing account using our API, you must provide an email address and a password. Our API then takes that information and validates it, returning a standard HTTP response with a valid JWT (Javascript Web Token) if the user has been authenticated successfully.
+To log in a user with an existing account using our API, you must provide an email address and a password. Our API then takes that information and validates it, returning a standard HTTP response with a valid JWT (JSON Web Token) if the user has been authenticated successfully.
 
 ##### Sample code in Javascript
 
