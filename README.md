@@ -12,7 +12,7 @@ All of our code is compliant with [ESLint](https://eslint.org), modern Javascrip
 
 ### Important Info
 - For endpoints that require authorization, a valid token must be passed through the `Authorization` header in the form:
-`Authorization: Token your_token`
+`Authorization: Bearer your_token`
 
 If a valid token is not passed in this way, the server will reject the request automatically, throwing an error.
 
