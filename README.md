@@ -17,7 +17,7 @@ All of our code is compliant with [ESLint](https://eslint.org), modern Javascrip
 If a valid token is not passed in this way, the server will reject the request automatically, throwing an error.
 
 
-Our standard API response looks like this:
+Our standard API response is `application/json` looks like this:
 ```javascript
 {
   data: Object,
@@ -25,16 +25,14 @@ Our standard API response looks like this:
   method: String
 }
 ```
-*if you parse the response as JSON.
 
-All data will be passed back under `data` and we also provide the API method you called
-as well as a time stamp of when you called it.
+All data will be passed back under the `data` field, along with a timestamp and the API endpoint.
 
 ### Errors
 If the API runs into a problem when attempting to complete your request, we will send back a response with a `status` >= `400`. If this is the case, there will be an `error` property under the `data` object in our standard response, providing an explanation as to what the error was.
 
 ### User Permissions
-All users in the database have a `permissionType` property that is, by default, `0`. This allows them to acces the main part of the website, post books, buy books, etc. Any user with permission type `1` is considered an admin, and can login and view the admin dashboard, confirming transaction details, viewing statistics, and finding users. Any user with permission type `2` is considered an owner, and as of now, this is the highest level of permission. Owners have the additional privilage of making other users admins, as well as running admin tools on the dashboard, such as the `Unlist Old Books` feature.
+All users in the database have a `permissionType` property that is, by default, `0`. This permission access allows them to access the main part of the website, post books, buy books, etc. Any user with permission type `1` is considered an admin, and can login and view the admin dashboard, confirming transaction details, view statistics, and find users. Any user with permission type `2` is considered an owner, and as of now, this is the highest level of permission. Owners have the additional privilage of making other users admins, as well as running admin tools on the dashboard, such as the `Unlist Old Books` feature.
 
 ## Documentation
 
@@ -42,32 +40,19 @@ All users in the database have a `permissionType` property that is, by default, 
 Our API uses a node package called JWT (JSON Web Tokens) to handle authentication. When a user is signed up, we verify all their information and then send them an email to the provided email address. Once they click the link we sent them, we store them in our database, hashing and salting the password and generating a token. We take security very seriously at BarterOut, because of this almost every request made by a client to the API requires a valid token. That token is verified serverside everytime a user makes a request, thus keeping our API and database safe from malicious attackers.
 
 #### Sign Up
-To Sign Up a user using our API, you must provide a valid `.edu` email address, first and last name, university, CMCBox, Venmo username, and password. Our API then takes that information sends a confirmation email to the specified email address. Once the user clicks the link in the email, their account is verified and they can start using the platform.
+To sign up a user using our API, you must provide a valid `.edu` email address, first and last name, university, CMCBox, Venmo username, and password. Our API then takes that information sends a confirmation email to the specified email address. Once the user clicks the link in the email, their account is verified and they can start using the platform.
 
 ##### Sample code in Javascript
 
 ```javascript
-const data = {
-    firstName,
-    lastName,
-    emailAddress,
-    university,
-    venmoUsername,
-    CMCBox,
-    password,
-};
-
 fetch('/api/auth/signup', {
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-    method: 'POST',
-    body: data,
-}).then((response) => {
-  // Do something with the response...
-  // Typically you would parse this as JSON.
-});
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  method: 'POST',
+  body: data,
+})
 ```
 
 #### Login
@@ -76,19 +61,14 @@ To log in a user with an existing account using our API, you must provide an ema
 ##### Sample code in Javascript
 
 ```javascript
-const data = { emailAddress, password };
-
 fetch('/api/auth/login', {
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-    method: 'POST',
-    body: data,
-}).then((response) => {
-  // Do something with the response...
-  // Typically you would parse this as JSON.
-});
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  method: 'POST',
+  body: data,
+})
 ```
 
 ### Managing Books 
@@ -98,7 +78,6 @@ We manage books in our database by storing them in two separate groups. One grou
  * __Status 1__: someone clicked buy on the website
  * __Status 2__: We have verified the condition of the book and charged the buyer
  * __Status 3__: the book has been delivered and we paid the seller
- * __Status 4__: Not in use
  * __Status 5__: The book has been unlisted and set as inactive
 Understanding these statuses is key to using our API.
 
@@ -115,16 +94,13 @@ To get all of the available books (books being sold that are not yet sold yet) y
 
 ```javascript
 fetch('/api/books/getAllBooks', {
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${Token}` // optional
-    },
-    method: 'GET',
-}).then((response) => {
-  // Do something with the response... (which is an array of books)
-  // Typically you would parse this as JSON.
-});
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${Token}`
+  },
+  method: 'GET',
+})
 ```
 
 #### Searching for specific books
@@ -137,18 +113,14 @@ Like any typical `GET` request to the API, you also need to provide a valid user
 ##### Sample code in Javascript
 ```javascript
 fetch('/api/books/search/:query/', {
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${Token}`
-    },
-    method: 'GET',
-}).then((response) => {
-  // Do something with the response... (which is an array of books)
-  // Typically you would parse this as JSON.
-});
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${Token}`
+  },
+  method: 'GET',
+})
 ```
-
 
 #### Posting a Book to be Sold
 To post a book that you want to sell to the database, you need to provide some key information.
@@ -163,3 +135,35 @@ This includes:
 - { **date**: Object } _REQUIRED_
 - { **Comments**: String }
 - { **ISBN**: String }
+
+#### `GET` Endpoints
+GET `/getBooksNoToken/:limit/:skip`  
+GET `/search/public/:query`  
+GET `/getAllBooks` :: _AUTH REQUIRED_  
+GET `/search/:query` :: _AUTH REQUIRED_  
+GET `/getUsersPosts` :: _AUTH REQUIRED_  
+GET `/getUserMatches` :: _AUTH REQUIRED_
+
+
+#### `POST` Endpoints
+POST `/deleteBook` :: _AUTH REQUIRED_  
+POST `/reactivateBook` :: _AUTH REQUIRED_  
+POST `/postBook` :: _AUTH REQUIRED_  
+POST `/requestBook` :: _AUTH REQUIRED_
+
+### Managing User Accounts
+
+#### `GET` Endpoints
+GET `/getRequests` :: _AUTH REQUIRED_  
+GET `/getCartItems` :: _AUTH REQUIRED_  
+GET `/getPurchasedBooks` :: _AUTH REQUIRED_  
+GET `/getUserData` :: _AUTH REQUIRED_  
+GET `/getSoldBooks` :: _AUTH REQUIRED_  
+GET `/getUserStatistics` :: _AUTH REQUIRED_  
+GET `/getNotifications` :: _AUTH REQUIRED_
+
+#### `POST` Endpoints
+POST `/deleteRequest` :: _AUTH REQUIRED_  
+POST `/addToCart` :: _AUTH REQUIRED_  
+POST `/removeFromCart` :: _AUTH REQUIRED_  
+POST `/clearCart` :: _AUTH REQUIRED_
