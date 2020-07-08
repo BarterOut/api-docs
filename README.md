@@ -17,7 +17,7 @@ All of our code is compliant with [ESLint](https://eslint.org), modern Javascrip
 If a valid token is not passed in this way, the server will reject the request automatically, throwing an error.
 
 
-Our standard API response is `application/json` looks like this:
+Our standard API response is `application/json` and looks like this:
 ```javascript
 {
   data: Object,
